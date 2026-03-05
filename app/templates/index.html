@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code Analyzer</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<h1>🔥 Code Analysis Tool 🔥</h1>
+
+<form action="/analyze" method="post">
+
+    <textarea name="code" rows="10" cols="60"
+        placeholder="Paste your code here"></textarea>
+
+    <br><br>
+
+    <button type="submit">Analyze</button>
+
+</form>
+
+{% if result %}
+
+<hr>
+
+<h2>Output:</h2>
+
+<p><b>Language:</b> {{ result["Language"] }}</p>
+<p><b>Lines:</b> {{ result["Lines"] }}</p>
+<p><b>Plagiarism %:</b> {{ result["Plagiarism %"] }}</p>
+
+{% endif %}
+
+</body>
+</html>
