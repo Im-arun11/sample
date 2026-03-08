@@ -1,15 +1,8 @@
-from difflib import SequenceMatcher
-
 def check_plagiarism(code):
 
-    # Example comparison (in real system compare with database)
-    sample_code = """
-def add(a,b):
-    return a+b
-"""
+    words = code.split()
+    unique_words = set(words)
 
-    similarity = SequenceMatcher(None, code, sample_code).ratio()
+    similarity = 100 - (len(unique_words) / len(words)) * 100 if words else 0
 
-    percentage = round(similarity * 100, 2)
-
-    return percentage
+    return f"Estimated similarity: {round(similarity,2)}%"

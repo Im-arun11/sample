@@ -1,35 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Code Analyzer</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Refiner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-white text-gray-900">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-blue-600">AI Code Refiner</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-700 hover:text-blue-600 transition">Docs</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 transition">GitHub</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 transition">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<h1>🔥 Code Analysis Tool 🔥</h1>
+    <!-- Hero Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-50 to-indigo-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                        Refine and Analyze Your Code with AI
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Improve readability, restructure code, and check plagiarism instantly.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button onclick="document.getElementById('tool').scrollIntoView({behavior: 'smooth'})" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition transform hover:scale-105">
+                            Refine Code
+                        </button>
+                        <button onclick="document.getElementById('tool').scrollIntoView({behavior: 'smooth'})" class="bg-gradient-to-r from-green-500 to-teal-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-teal-700 transition transform hover:scale-105">
+                            Check Plagiarism
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <!-- Placeholder for code editor illustration -->
+                    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+                        <div class="bg-gray-900 rounded-t-lg p-4">
+                            <div class="flex space-x-2 mb-4">
+                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                            <div class="text-green-400 font-mono text-sm">
+                                <div>def hello_world():</div>
+                                <div>    print("Hello, AI!")</div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-100 rounded-b-lg p-4">
+                            <p class="text-gray-600 text-sm">Modern code refinement at your fingertips</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<form action="/analyze" method="post">
+    <!-- Main Tool Section -->
+    <section class="py-20 bg-gray-50" id="tool">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-2xl p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Code Refinement Tool</h2>
+                
+                <!-- Code Input and Buttons -->
+                <form action="/process" method="post" class="mb-8">
+                    <label for="code" class="block text-lg font-semibold mb-4 text-gray-700">Paste Your Code Here</label>
+                    <textarea id="code" name="code" rows="12" class="w-full bg-gray-900 text-green-400 font-mono text-sm p-4 rounded-lg border-2 border-gray-300 focus:border-blue-500 focus:outline-none resize-none mb-6" placeholder="Enter your code...">{{ code or '' }}</textarea>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button type="submit" name="action" value="refine" class="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition transform hover:scale-105 shadow-lg">
+                            Refine Code
+                        </button>
+                        <button type="submit" name="action" value="plagiarism" class="flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-teal-700 transition transform hover:scale-105 shadow-lg">
+                            Check Plagiarism
+                        </button>
+                    </div>
+                </form>
 
-    <textarea name="code" rows="10" cols="60"
-        placeholder="Paste your code here"></textarea>
+                <!-- Results -->
+                {% if refined_code %}
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Refined Code Output</h3>
+                    <div class="bg-gray-100 rounded-lg p-4 border-l-4 border-blue-500">
+                        <pre class="text-gray-900 font-mono text-sm whitespace-pre-wrap">{{ refined_code }}</pre>
+                    </div>
+                </div>
+                {% endif %}
 
-    <br><br>
+                {% if plagiarism_result %}
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Plagiarism Result</h3>
+                    <div class="bg-gray-100 rounded-lg p-4 border-l-4 border-green-500">
+                        <p class="text-gray-900 font-semibold">{{ plagiarism_result }}</p>
+                    </div>
+                </div>
+                {% endif %}
 
-    <button type="submit">Analyze</button>
+                {% if error %}
+                <div class="mb-6">
+                    <div class="bg-red-100 rounded-lg p-4 border-l-4 border-red-500">
+                        <p class="text-red-900 font-semibold">{{ error }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
 
-</form>
-
-{% if result %}
-
-<hr>
-
-<h2>Output:</h2>
-
-<p><b>Language:</b> {{ result["Language"] }}</p>
-<p><b>Lines:</b> {{ result["Lines"] }}</p>
-<p><b>Plagiarism %:</b> {{ result["Plagiarism %"] }}</p>
-
-{% endif %}
-
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 AI Code Refiner. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

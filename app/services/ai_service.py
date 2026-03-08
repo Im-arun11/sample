@@ -1,34 +1,39 @@
-from app.services.plagiarism_engine import check_plagiarism
+import requests
 
-def analyze_code(code: str):
+API_URL = "https://router.huggingface.co/hf-inference/models/codellama/CodeLlama-7b-hf"
 
-    if not code:
-        return {
-            "Language": "Unknown",
-            "Lines": 0,
-            "Import Found": "No",
-            "Plagiarism %": 0
+API_TOKEN = "hf_your_token_here"
+
+headers = {
+    "Authorization": f"Bearer {API_TOKEN}"
+}
+
+SYSTEM_PROMPT = """
+Rewrite the given code with the same logic.
+Change variable names and structure.
+Improve readability.
+Return only the rewritten code.
+"""
+
+def refine_code(code):
+
+    prompt = f"{SYSTEM_PROMPT}\n\nCode:\n{code}"
+
+    payload = {
+        "inputs": prompt,
+        "parameters": {
+            "max_new_tokens": 200
         }
-
-    clean_code = code.strip()
-
-    lines = [line for line in clean_code.split("\n") if line.strip() != ""]
-    line_count = len(lines)
-
-    import_found = "Yes" if "import" in clean_code else "No"
-
-    if "def " in clean_code or "print(" in clean_code:
-        language = "Python"
-    elif "#include" in clean_code:
-        language = "C"
-    else:
-        language = "Unknown"
-
-    plagiarism_percent = check_plagiarism(clean_code)
-
-    return {
-        "Language": language,
-        "Lines": line_count,
-        "Import Found": import_found,
-        "Plagiarism %": plagiarism_percent
     }
+
+    response = requests.post(API_URL, headers=headers, json=payload)
+
+    result = response.json()
+
+    if isinstance(result, list):
+        return result[0].get("generated_text", "No output generated")
+
+    if "error" in result:
+        return result["error"]
+
+    return "Unexpected API response"
